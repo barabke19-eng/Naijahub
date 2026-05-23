@@ -14,8 +14,8 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-       caches.match('/Naijahub/')
+  caches.match('/Naijahub/')
+.then(response => response || fetch(ev
       .then(response => response || fetch(event.request))
   );
 });
