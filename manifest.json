@@ -2,7 +2,8 @@
   "name": "Naija Live Hub",
   "short_name": "NaijaHub",
   "description": "Real-time Football Scores for EPL, La Liga, NPFL, UCL and more",
-  "start_url": "/",
+     "start_url": "./",
+   "scope": "./"
   "display": "standalone",
   "background_color": "#008751",
   "theme_color": "#008751",
