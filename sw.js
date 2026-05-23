@@ -1,10 +1,12 @@
-   const urlsToCache = [
-     '/Naijahub/',
-     '/Naijahub/index.html',
-     '/Naijahub/manifest.json',
-     '/Naijahub/icon-192.png',
-     '/Naijahub/icon-512.png'
-   ]
+const CACHE_NAME = 'naijahub-v3';
+
+const urlsToCache = [
+  '/Naijahub/',
+  '/Naijahub/index.html',
+  '/Naijahub/manifest.json',
+  '/Naijahub/icon-192.png',
+  '/Naijahub/icon-512.png'
+];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -14,7 +16,22 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  caches.match('/Naijahub/')
-caches.match(event.request)
-.then(response => response || fetch(event.request)
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });
