@@ -7,14 +7,122 @@
   <title>Naija Live Hub</title>
   <meta name="theme-color" content="#22c55e">
   <meta name="description" content="Real-time Football Scores - EPL, La Liga, NPFL, UCL">
+  <link rel="manifest" href='data:application/json,{"name":"Naija Live Hub","short_name":"NaijaHub","start_url":"/Naijahub/","display":"standalone","background_color":"#0b0f19","theme_color":"#22c55e","icons":[{"src":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iIzIyYzU1ZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIyMDAiIGZvbnQtd2VpZ2h0PSI5MDAiPk5IPC90ZXh0Pjwvc3ZnPg==","sizes":"512x512","type":"image/svg+xml"}]}'>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:system-ui,sans-serif;background:#0b0f19;color:white;padding-bottom:80px}
+   .header{background:linear-gradient(135deg,#22c55e,#16a34a);padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 4px 6px rgba(0,0,0,0.3)}
+   .header h1{font-size:24px;font-weight:800}
+   .header p{font-size:12px;opacity:0.9;margin-top:4px}
+   .tabs{display:flex;gap:8px;padding:12px;background:#1a1f2e;overflow-x:auto;position:sticky;top:72px;z-index:90}
+   .tab{padding:8px 16px;background:#2a2f3e;border:none;color:white;border-radius:20px;font-weight:600;cursor:pointer;white-space:nowrap}
+   .tab.active{background:#22c55e}
+   .container{padding:16px}
+   .match-card{background:#1a1f2e;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #2a2f3e}
+   .league{font-size:12px;color:#22c55e;font-weight:700;margin-bottom:8px;text-transform:uppercase}
+   .match-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+   .team{flex:1;text-align:center;font-weight:600}
+   .score{font-size:24px;font-weight:800;color:#22c55e;min-width:60px;text-align:center}
+   .time{font-size:12px;color:#9ca3af;text-align:center;margin-top:8px}
+   .loading{text-align:center;padding:40px;color:#9ca3af}
+   .error{background:#7f1d1d;color:#fecaca;padding:16px;border-radius:12px;margin:16px;text-align:center}
+   .install-btn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;border:none;padding:12px 24px;border-radius:25px;font-weight:700;box-shadow:0 4px 12px rgba(34,197,94,0.4);cursor:pointer;display:none}
+  </style>
+</head><body>
+  <div class="header">
+    <h1>🇳🇬 Naija Live Hub</h1>
+    <p>Live Football Scores - EPL, La Liga, NPFL, UCL</p>
+  </div>
 
-  <!-- Manifest a ciki - babu wani file -->
-  <link rel="manifest" href='data:application/json,{
-    "name": "Naija Live Hub",
-    "short_name": "NaijaHub",
-    "start_url": "/Naijahub/",
+  <div class="tabs">
+    <button class="tab active" onclick="loadLeague('all')">Duka</button>
+    <button class="tab" onclick="loadLeague('PL')">EPL</button>
+    <button class="tab" onclick="loadLeague('PD')">La Liga</button>
+    <button class="tab" onclick="loadLeague('CL')">UCL</button>
+  </div>
 
-              "background_color": "#0b0f19",
-    "theme_color": "#22c55e",
-    "icons": [{
-      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAADLVJREFUeJzt3XecVdV9x/H3zqz3zqz3zmZ3Z3Z3Z8y8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k8M5nJzJkzM9k
+  <div class="container" id="matches">
+    <div class="loading">Ana dauko matches...</div>
+  </div>
+
+  <button class="install-btn" id="installBtn">Shigar da App a Wayarka</button>  <script>
+    const API_KEY = 'SHIGAR_API_KEY_DINKA_ANAN';
+    const API_URL = 'https://v3.football.api-sports.io/fixtures';
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+    });
+
+    document.getElementById('installBtn').addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+        document.getElementById('installBtn').style.display = 'none';
+      }
+    });
+
+    async function loadLeague(league) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      const container = document.getElementById('matches');
+      container.innerHTML = '<div class="loading">Ana dauko matches...</div>';
+
+      if (API_KEY === 'SHIGAR_API_KEY_DINKA_ANAN') {
+        showSampleData();
+        return;
+      }
+
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        let url = `${API_URL}?date=${today}`;
+        if (league!== 'all') url += `&league=${getLeagueId(league)}&season=2024`;
+        const res = await fetch(url, { headers: { 'x-apisports-key': API_KEY } });
+        if (!res.ok) throw new Error('API Error');
+        const data = await res.json();
+        displayMatches(data.response || []);
+      } catch (err) {
+        container.innerHTML = `<div class="error"><b>An samu matsala!</b><br>${err.message}<br><br>Tabbatar ka sa API key dinka a layi na 120.<br>Ka samo key kyauta a: api-football.com</div>`;
+      }
+    }
+
+    function getLeagueId(code) {
+      const leagues = { 'PL': 39, 'PD': 140, 'CL': 2 };
+      return leagues[code] || 39;
+    }
+
+    function displayMatches(matches) {
+      const container = document.getElementById('matches');
+      if (matches.length === 0) {
+        container.innerHTML = '<div class="loading">Babu matches a yau</div>';
+        return;
+      }
+      container.innerHTML = matches.map(m => `
+        <div class="match-card">
+          <div class="league">${m.league.name}</div>
+          <div class="match-row">
+            <div class="team">${m.teams.home.name}</div>
+            <div class="score">${m.goals.home!== null? m.goals.home : '-'} : ${m.goals.away!== null? m.goals.away : '-'}</div>
+            <div class="team">${m.teams.away.name}</div>
+          </div>
+          <div class="time">${m.fixture.status.short === 'FT'? 'An kammala' : m.fixture.status.short === 'NS'? m.fixture.date.split('T')[1].slice(0,5) : m.fixture.status.elapsed + "'"}</div>
+        </div>
+      `).join('');
+    }
+
+    function showSampleData() {
+      const sample = [
+        { league: {name: 'Premier League'}, teams: {home: {name: 'Man City'}, away: {name: 'Arsenal'}}, goals: {home: 2, away: 1}, fixture: {status: {short: 'FT', elapsed: 90}, date: '2024-01-01T15:00:00'} },
+        { league: {name: 'La Liga'}, teams: {home: {name: 'Real Madrid'}, away: {name: 'Barcelona'}}, goals: {home: 3, away: 2}, fixture: {status: {short: 'LIVE', elapsed: 67}, date: '2024-01-01T18:00:00'} },
+        { league: {name: 'NPFL'}, teams: {home: {name: 'Enyimba'}, away: {name: 'Kano Pillars'}}, goals: {home: 1, away: 0}, fixture: {status: {short: 'NS', elapsed: null}, date: '2024-01-01T16:00:00'} }
+      ];
+      displayMatches(sample);
+      document.getElementById('matches').insertAdjacentHTML('afterbegin', `<div class="error"><b>Sample Data Kawai!</b><br>Don ganin real matches, je layi na 120 ka sa API key dinka.<br>Samu kyauta a: api-football.com</div>`);
+    }
+
+    loadLeague('all');
+  </script>
+</body>
+</html>
