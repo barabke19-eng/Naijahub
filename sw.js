@@ -1,11 +1,10 @@
-const CACHE_NAME = 'naijahub-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
-];
+   const urlsToCache = [
+     '/Naijahub/',
+     '/Naijahub/index.html',
+     '/Naijahub/manifest.json',
+     '/Naijahub/icon-192.png',
+     '/Naijahub/icon-512.png'
+   ]
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -16,7 +15,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+       caches.match('/Naijahub/')
       .then(response => response || fetch(event.request))
   );
 });
