@@ -1,12 +1,13 @@
    {
      "name": "Naija Live Hub",
-     "short_name": "NaijaHub", 
+     "short_name": "NaijaHub",
      "description": "Real-time Football Scores for EPL, La Liga, NPFL, UCL and more",
      "start_url": "/Naijahub/",
      "scope": "/Naijahub/",
      "display": "standalone",
      "background_color": "#0b0f19",
      "theme_color": "#22c55e",
+     "orientation": "portrait",
      "icons": [
        {
          "src": "icon-192.png",
@@ -14,32 +15,9 @@
          "type": "image/png"
        },
        {
-         "src": "icon-512.png", 
+         "src": "icon-512.png",
          "sizes": "512x512",
          "type": "image/png"
        }
      ]
    }
-  "description": "Real-time Football Scores for EPL, La Liga, NPFL, UCL and more",
-        "start_url": "/Naijahub/",
-   "scope": "/Naijahub/"
-  "display": "standalone",
-  "background_color": "#008751",
-  "theme_color": "#008751",
-  "orientation": "portrait",
-  "id": "/",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
-}
