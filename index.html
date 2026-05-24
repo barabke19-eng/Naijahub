@@ -46,7 +46,7 @@
   </div>
 
   <button class="install-btn" id="installBtn">Shigar da App a Wayarka</button>
-    const API_KEY = 'f24472d6975a204e855152ef9c0aef7f';
+    const API_KEY = e0741349cf2cc88e50d3cb78d2775950
     const API_URL = 'https://v3.football.api-sports.io/fixtures';
     let deferredPrompt;
 
@@ -64,102 +64,61 @@
       }
     });
 
-    async function loadLeague(league) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      event.target.classList.add('active');
-      const container = document.getElementById('matches');
-      container.innerHTML = '<div class="loading">Ana dauko matches...</div>';
+  async function loadLeague(league) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  const container = document.getElementById('match
+    container.innerHTML = '<div class="loading">Ana dauko matches...</div>';
 
-'; try { const today = new
-        showSampleData();
-        return;
-      }
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    let url = `${API_URL}?date=${today}`;
+    if (league!== 'all') url += `&league=${getLeagueId(league)}`;
+    url += `&timezone=Africa/Lagos&season=2025`;
 
-      try {
-        const today = new Date().toISOString().split('T')[0];
-        let url = `${API_URL}?date=${today}`;
-        if (league!== 'all') url += `&league=${getLeagueId(league)}`&timezone=Africa/Lagos&season=2025`
-        const res = await fetch(url, { headers: { 'x-apisports-key': API_KEY } });
-        if (!res.ok) throw new Error('API Error');
-        const data = await res.json();
-        displayMatches(data.response || []);
-      } catch (err) {
-        container.innerHTML = `<div class="error"><b>An samu matsala!</b><br>${err.message}<br><br>Tabbatar ka sa API key dinka a layi na 120.<br>Ka samo key kyauta a: api-football.com</div>`;
-      }
-    }
-
-    function getLeagueId(code) {
-      const leagues = { 'PL': 39, 'PD': 140, 'CL': 2 };
-      return leagues[code] || 39;
-    }
-
-    function displayMatches(matches) {
-      const container = document.getElementById('matches');
-      if (matches.length === 0) {
-        container.innerHTML = '<div class="loading">Babu matches a yau</div>';
-        return;
-      }
-      container.innerHTML = matches.map(m => `
-        <div class="match-card">
-          <div class="league">${m.league.name}</div>
-          <div class="match-row">
-            <div class="team">${m.teams.home.name}</div>
-            <div class="score">${m.goals.home!== null? m.goals.home : '-'} : ${m.goals.away!== null? m.goals.away : '-'}</div>
-            <div class="team">${m.teams.away.name}</div>
-          </div>
-          <div class="time">${m.fixture.status.short === 'FT'? 'An kammala' : m.fixture.status.short === 'NS'? m.fixture.date.split('T')[1].slice(0,5) : m.fixture.status.elapsed + "'"}</div>
-        </div>
-      `).join('');
-    }
-
-    function showSampleData() {
-      const sample = [
-        { league: {name: 'Premier League'}, teams: {home: {name: 'Man City'}, away: {name: 'Arsenal'}}, goals: {home: 2, away: 1}, fixture: {status: {short: 'FT', elapsed: 90}, date: '2024-01-01T15:00:00'} },
-        { league: {name: 'La Liga'}, teams: {home: {name: 'Real Madrid'}, away: {name: 'Barcelona'}}, goals: {home: 3, away: 2}, fixture: {status: {short: 'LIVE', elapsed: 67}, date: '2024-01-01T18:00:00'} },
-        { league: {name: 'NPFL'}, teams: {home: {name: 'Enyimba'}, away: {name: 'Kano Pillars'}}, goals: {home: 1, away: 0}, fixture: {status: {short: 'NS', elapsed: null}, date: '2024-01-01T16:00:00'} }
-      ];
-      displayMatches(sample);
-      document.getElementById('matches').insertAdjacentHTML('afterbegin', `<div class="error"><b>Sample Data Kawai!</b><br>Don ganin real matches, je layi na 120 ka sa API key dinka.<br>Samu kyauta a: api-football.com</div>`);
-    }
-
-    loadLeague('all');
-  function getLeagueId(league) {
-  if (league === 'PL') return 39;
-  if (league === 'PD') return 140;
-  if (league === 'CL') return 2;
-  return 39;
-}
-    function displayMatches(matches) {
-    const container = document.getElementById('matches');
-    if (!matches || matches.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:20px; color:#888;">Babu wasa a yau.</p>';
-      return;
-    }
-  let html = '';
-  matches.forEach(match => {
-    const home = match.teams.home.name;
-    const away = match.teams.away.name;
-    const time = new Date(match.fixture.date).toLocaleTimeString('en-GB', {
-      hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Lagos'
-    });
-    const status = match.fixture.status.short;
-    const score = status === 'NS'? time : `${match.goals.home?? 0} - ${match.goals.away?? 0}`;
-    
-    html += `
-      <div style="background:#1a1a1a; margin:10px 0; padding:12px; border-radius:8px; border:1px solid #333;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="width:40%; text-align:right;">${home}</span>
-          <span style="background:#333; padding:4px 12px; border-radius:4px;">${score}</span>
-          <span style="width:40%; text-align:left;">${away}</span>
-        </div>
+    const res = await fetch(url, { headers: { 'x-apisports-key': API_KEY } });
+    if (!res.ok) throw new Error('API Error');
+    const data = await res.json();
+    displayMatches(data.response || []);
+  } catch (err) {
+    container.innerHTML = `
+      <div style="background:#b91c1c; padding:20px; border-radius:8px; text-align:center;">
+        <b>An samu matsala!</b><br>${err.message}<br><br>
+        Tabbatar ka sa API key dinka. Ka samo key kyauta a: api-football.com
       </div>
     `;
-  });
-  container.innerHTML = html;
+  }
 }
-  document.addEventListener('DOMContentLoaded', function() {
+function getLeagueId(code) {
+  const leagues = { 'PL': 39, 'PD': 140, 'CL': 2, 'EL': 3 };
+  return leagues[code] || 39;
+}
+
+function displayMatches(matches) {
+  const container = document.getElementById('matches');
+  if (!matches || matches.length === 0) {
+    container.innerHTML = '<p style="text-align:center; padding:20px;">Babu wasa a yau.</p>';
+    return;
+  }
+
+  container.innerHTML = matches.map(match => `
+    <div class="match">
+      <div class="teams">
+        <span>${match.teams.home.name}</span>
+        <strong>vs</strong>
+        <span>${match.teams.away.name}</span>
+      </div>
+      <div class="info">
+        ${new Date(match.fixture.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} |
+        ${match.league.name}
+      </div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
   loadLeague('all');
 });
-  </script>
+</script>
 </body>
 </html>
