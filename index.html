@@ -78,7 +78,7 @@
       try {
         const today = new Date().toISOString().split('T')[0];
         let url = `${API_URL}?date=${today}`;
-        if (league!== 'all') url += `&league=${getLeagueId(league)}&season=2024`;
+        if (league!== 'all') url += `&league=${getLeagueId(league)}`&timezone=Africa/Lagos&season=2025`
         const res = await fetch(url, { headers: { 'x-apisports-key': API_KEY } });
         if (!res.ok) throw new Error('API Error');
         const data = await res.json();
@@ -123,6 +123,43 @@
     }
 
     loadLeague('all');
+  function getLeagueId(league) {
+  if (league === 'PL') return 39;
+  if (league === 'PD') return 140;
+  if (league === 'CL') return 2;
+  return 39;
+}
+    function displayMatches(matches) {
+    const container = document.getElementById('matches');
+    if (!matches || matches.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding:20px; color:#888;">Babu wasa a yau.</p>';
+      return;
+    }
+  let html = '';
+  matches.forEach(match => {
+    const home = match.teams.home.name;
+    const away = match.teams.away.name;
+    const time = new Date(match.fixture.date).toLocaleTimeString('en-GB', {
+      hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Lagos'
+    });
+    const status = match.fixture.status.short;
+    const score = status === 'NS'? time : `${match.goals.home?? 0} - ${match.goals.away?? 0}`;
+    
+    html += `
+      <div style="background:#1a1a1a; margin:10px 0; padding:12px; border-radius:8px; border:1px solid #333;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="width:40%; text-align:right;">${home}</span>
+          <span style="background:#333; padding:4px 12px; border-radius:4px;">${score}</span>
+          <span style="width:40%; text-align:left;">${away}</span>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+  document.addEventListener('DOMContentLoaded', function() {
+  loadLeague('all');
+});
   </script>
 </body>
 </html>
