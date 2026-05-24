@@ -45,16 +45,18 @@
     <div class="loading">Ana dauko matches...</div>
   </div>
 
-  <button class="install-btn" id="installBtn">Shigar da App a Wayarka</button>
-    const API_KEY = 'e0741349cf2cc88e50d3cb78d2775950';
-    const API_URL = 'https://v3.football.api-sports.io/fixtures';
-    let deferredPrompt;
+  const API_KEY = 'e0741349cf2cc88e50d3cb78d2775950';
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'block';
-    });
+const API_URL = 'https://v3.football.api-sports.io/fixtures';
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+ e.preventDefault();
+ deferredPrompt = e;
+
+ document.getElementById('installBtn').style.display = 'block';
+});
 
     document.getElementById('installBtn').addEventListener('click', () => {
       if (deferredPrompt) {
