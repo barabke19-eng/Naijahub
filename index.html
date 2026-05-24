@@ -1,127 +1,169 @@
 <!DOCTYPE html>
-<html lang="ha">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <base href="/Naijahub/">
-  <title>Naija Live Hub</title>
-  <meta name="theme-color" content="#22c55e">
-  <meta name="description" content="Real-time Football Scores - EPL, La Liga, NPFL, UCL">
-  <link rel="manifest" href='data:application/json,{"name":"Naija Live Hub","short_name":"NaijaHub","start_url":"/Naijahub/","display":"standalone","background_color":"#0b0f19","theme_color":"#22c55e","icons":[{"src":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIgZmlsbD0iIzIyYzU1ZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIyMDAiIGZvbnQtd2VpZ2h0PSI5MDAiPk5IPC90ZXh0Pjwvc3ZnPg==","sizes":"512x512","type":"image/svg+xml"}]}'>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:system-ui,sans-serif;background:#0b0f19;color:white;padding-bottom:80px}
-   .header{background:linear-gradient(135deg,#22c55e,#16a34a);padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 4px 6px rgba(0,0,0,0.3)}
-   .header h1{font-size:24px;font-weight:800}
-   .header p{font-size:12px;opacity:0.9;margin-top:4px}
-   .tabs{display:flex;gap:8px;padding:12px;background:#1a1f2e;overflow-x:auto;position:sticky;top:72px;z-index:90}
-   .tab{padding:8px 16px;background:#2a2f3e;border:none;color:white;border-radius:20px;font-weight:600;cursor:pointer;white-space:nowrap}
-   .tab.active{background:#22c55e}
-   .container{padding:16px}
-   .match-card{background:#1a1f2e;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #2a2f3e}
-   .league{font-size:12px;color:#22c55e;font-weight:700;margin-bottom:8px;text-transform:uppercase}
-   .match-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
-   .team{flex:1;text-align:center;font-weight:600}
-   .score{font-size:24px;font-weight:800;color:#22c55e;min-width:60px;text-align:center}
-   .time{font-size:12px;color:#9ca3af;text-align:center;margin-top:8px}
-   .loading{text-align:center;padding:40px;color:#9ca3af}
-   .error{background:#7f1d1d;color:#fecaca;padding:16px;border-radius:12px;margin:16px;text-align:center}
-   .install-btn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;border:none;padding:12px 24px;border-radius:25px;font-weight:700;box-shadow:0 4px 12px rgba(34,197,94,0.4);cursor:pointer;display:none}
-  </style>
-</head><body>
-  <div class="header">
-    <h1>🇳🇬 Naija Live Hub</h1>
-    <p>Live Football Scores - EPL, La Liga, NPFL, UCL</p>
-  </div>
+<meta charset="UTF-8">
+<title>Naija Live Hub</title>
 
-  <div class="tabs">
-    <button class="tab active" onclick="loadLeague('all')">Duka</button>
-    <button class="tab" onclick="loadLeague('PL')">EPL</button>
-    <button class="tab" onclick="loadLeague('PD')">La Liga</button>
-    <button class="tab" onclick="loadLeague('CL')">UCL</button>
-  </div>
-
-  <div class="container" id="matches">
-    <div class="loading">Ana dauko matches...</div>
-  </div>
-
-  const API_KEY = 'e0741349cf2cc88e50d3cb78d2775950';
-
-const API_URL = 'https://v3.football.api-sports.io/fixtures';
-
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
- e.preventDefault();
- deferredPrompt = e;
-
- document.getElementById('installBtn').style.display = 'block';
-});
-
-    document.getElementById('installBtn').addEventListener('click', () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt = null;
-        document.getElementById('installBtn').style.display = 'none';
-      }
-    });
-
-  async function loadLeague(league) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  const container = document.getElementById('matches');
-  container.innerHTML = '<div class="loading">Ana dauko matches...</div>';
-
-  try {
-    const today = new Date().toISOString().split('T')[0];
-    let url = `${API_URL}?date=${today}`;
-    if (league!== 'all') url += `&league=${getLeagueId(league)}`;
-    url += `&timezone=Africa/Lagos&season=2025`;
-
-    const res = await fetch(url, { headers: { 'x-apisports-key': API_KEY } });
-    if (!res.ok) throw new Error('API Error');
-    const data = await res.json();
-    displayMatches(data.response || []);
-  } catch (err) {
-    container.innerHTML = `
-      <div style="background:#b91c1c; padding:20px; border-radius:8px; text-align:center;">
-        <b>An samu matsala!</b><br>${err.message}<br><br>
-        Tabbatar ka sa API key dinka a layi na 1.<br>
-        Ka samo key kyauta a: api-football.com
-      </div>
-    `;
-  }
+<style>
+body{
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  margin:0;
+  padding:0;
 }
-function getLeagueId(code) {
-  const leagues = { 'PL': 39, 'PD': 140, 'CL': 2, 'EL': 3 };
+
+header{
+  background:#16a34a;
+  padding:15px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.tabs{
+  display:flex;
+  overflow:auto;
+  background:#111827;
+}
+
+.tabs button{
+  flex:1;
+  padding:12px;
+  border:none;
+  background:none;
+  color:white;
+  font-size:16px;
+}
+
+.tabs button:hover{
+  background:#16a34a;
+}
+
+.match{
+  background:#1e293b;
+  margin:10px;
+  padding:15px;
+  border-radius:10px;
+}
+
+.time{
+  color:#22c55e;
+  margin-top:5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>Naija Live Hub</header>
+
+<div class="tabs">
+  <button onclick="loadLeague('all')">Duka</button>
+  <button onclick="loadLeague('PL')">EPL</button>
+  <button onclick="loadLeague('PD')">La Liga</button>
+  <button onclick="loadLeague('CL')">UCL</button>
+</div>
+
+<div id="matches" style="padding:10px;">
+Ana dauko matches...
+</div>
+
+<script>
+
+const API_KEY = "e0741349cf2cc88e50d3cb78d2775950";
+const API_URL = "https://v3.football.api-sports.io/fixtures";
+
+function getLeagueId(code){
+  const leagues = {
+    'PL':39,
+    'PD':140,
+    'CL':2
+  };
+
   return leagues[code] || 39;
 }
 
-function displayMatches(matches) {
-  const container = document.getElementById('matches');
-  if (!matches || matches.length === 0) {
-    container.innerHTML = '<p style="text-align:center; padding:20px;">Babu wasa a yau.</p>';
+async function loadLeague(league){
+
+  const container = document.getElementById("matches");
+
+  container.innerHTML = "Ana dauko matches...";
+
+  try{
+
+    const today = new Date().toISOString().split('T')[0];
+
+    let url = `${API_URL}?date=${today}`;
+
+    if(league !== 'all'){
+      url += `&league=${getLeagueId(league)}`;
+    }
+
+    url += "&season=2025&timezone=Africa/Lagos";
+
+    const res = await fetch(url,{
+      headers:{
+        'x-apisports-key': API_KEY
+      }
+    });
+
+    if(!res.ok){
+      throw new Error("API Error");
+    }
+
+    const data = await res.json();
+
+    displayMatches(data.response || []);
+
+  }catch(err){
+
+    container.innerHTML = `
+      <h3>An samu matsala!</h3>
+      <p>${err.message}</p>
+      <p>Tabbatar ka sa API key dinka.</p>
+    `;
+  }
+}
+
+function displayMatches(matches){
+
+  const container = document.getElementById("matches");
+
+  if(matches.length === 0){
+
+    container.innerHTML = "Babu wasa a yau.";
+
     return;
   }
 
   container.innerHTML = matches.map(match => `
+
     <div class="match">
-      <div class="teams">
-        <span>${match.teams.home.name}</span>
-        <strong>vs</strong>
-        <span>${match.teams.away.name}</span>
+      <h3>
+        ${match.teams.home.name}
+        vs
+        ${match.teams.away.name}
+      </h3>
+
+      <div class="time">
+        ${new Date(match.fixture.date).toLocaleTimeString('en-US',{
+          hour:'2-digit',
+          minute:'2-digit'
+        })}
       </div>
-      <div class="info">
-        ${new Date(match.fixture.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} |
-        ${match.league.name}
-      </div>
+
+      <p>${match.league.name}</p>
     </div>
+
   `).join('');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function(){
   loadLeague('all');
 });
+
 </script>
+
 </body>
 </html>
