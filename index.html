@@ -46,7 +46,7 @@
   </div>
 
   <button class="install-btn" id="installBtn">Shigar da App a Wayarka</button>
-    const API_KEY = e0741349cf2cc88e50d3cb78d2775950
+    const API_KEY = 'e0741349cf2cc88e50d3cb78d2775950';
     const API_URL = 'https://v3.football.api-sports.io/fixtures';
     let deferredPrompt;
 
@@ -67,8 +67,8 @@
   async function loadLeague(league) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
-  const container = document.getElementById('match
-    container.innerHTML = '<div class="loading">Ana dauko matches...</div>';
+  const container = document.getElementById('matches');
+  container.innerHTML = '<div class="loading">Ana dauko matches...</div>';
 
   try {
     const today = new Date().toISOString().split('T')[0];
@@ -84,7 +84,8 @@
     container.innerHTML = `
       <div style="background:#b91c1c; padding:20px; border-radius:8px; text-align:center;">
         <b>An samu matsala!</b><br>${err.message}<br><br>
-        Tabbatar ka sa API key dinka. Ka samo key kyauta a: api-football.com
+        Tabbatar ka sa API key dinka a layi na 1.<br>
+        Ka samo key kyauta a: api-football.com
       </div>
     `;
   }
